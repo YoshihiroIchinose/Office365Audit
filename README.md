@@ -24,7 +24,7 @@ $OutputFolder=[System.Environment]::GetFolderPath("Desktop")+"\"
 Import-Module ExchangeOnlineManagement
 Connect-ExchangeOnline -UserPrincipalName $User
 
-#監査ログデータを取得
+#日付と時刻で固有のセッション ID 文字列を生成
 $sessionId=$RecordType+(Get-Date -Format "yyyyMMdd-HHmm")
 
 #最大 5,000 x 10 回のループでログを取得
