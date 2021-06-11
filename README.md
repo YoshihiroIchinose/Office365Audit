@@ -79,7 +79,7 @@ $book.close()
 $excel.quit()
 
 ```
-なお 15,145 件のデータでは、CSV 形式で 8.31 MB のサイズだったファイルが、XLSX 形式に変換することで約 3 分の 1 の 2.68 MB に圧縮できた。
+なお 15,145 件のデータでは、CSV 形式で 8.31 MB のサイズだったファイルが、XLSX 形式に変換することで約 3 分の 1 の 2.68 MB に圧縮できました。
 
 ## (参考) DLPEndpooint の RecordType で確認されている Operation の種類
 (他にも BlueeTooth の操作もあるはず)
