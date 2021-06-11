@@ -128,4 +128,3 @@ $csv|Export-Csv -Path ($OutputFolder+$sessionId+".csv") -NoTypeInformation -Enco
 - ParentArchiveHash  
 - SensitivityLabelEventData  
 - PreviousFileName  
--
