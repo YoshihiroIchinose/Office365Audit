@@ -68,7 +68,7 @@ foreach($row in $output){
 $csv|Export-Csv -Path ($OutputFolder+$sessionId+".csv") -NoTypeInformation -Encoding UTF8
 
 ```
-## (参考) DLPEndpooint の RecordType で確認されている Opertion の内容
+## (参考) DLPEndpooint の RecordType で確認されている Operation の種類
 (他にも BlueeTooth の操作もあるはず)
 - FileDeleted  
 - RemovableMediaUnmount  
@@ -89,7 +89,7 @@ $csv|Export-Csv -Path ($OutputFolder+$sessionId+".csv") -NoTypeInformation -Enco
 - FileMoved  
 - FileCopiedToClipboard  
 
-## (参考) 上記 Opertions のログの AuditData に含まれる JSON 内の属性
+## (参考) 上記 Operation のログの AuditData に含まれる JSON 内の属性
 (Operation の種類によって含まれる情報は異なる)
 - Application  
 - ClientIP  
