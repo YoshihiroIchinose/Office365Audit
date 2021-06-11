@@ -32,7 +32,7 @@ $output=@();
 for($i = 0; $i -lt 10; $i++){
     $result=Search-UnifiedAuditLog -RecordType $RecordType -Startdate $Startdate -Enddate $Enddate -SessionId $sessionId -SessionCommand ReturnLargeSet -ResultSize 5000
     $output+=$result
-    "クエリ"+$i+"回目: "+$result.Count.ToString() + " 件取得"
+    "クエリ"+($i+1)+"回目: "+$result.Count.ToString() + " 件取得"
     if($result.count -ne 5000){break}
 }
 "合計: "+$Output.Count.ToString() + " 件取得"
@@ -73,7 +73,7 @@ $csv|Export-Csv -Path ($OutputFolder+$sessionId+".csv") -NoTypeInformation -Enco
 $excel = new-Object -com excel.application
 $excel.visible = $false
 $book = $excel.Workbooks.open($OutputFolder+$sessionId+".csv")
-$book.ActiveSheet.ListObjects.Add(1,$book.ActiveSheet.Range("A1").CurrentRegion ,$null,1)
+$book.ActiveSheet.ListObjects.Add(1,$book.ActiveSheet.Range("A1").CurrentRegion ,$null,1).Name = "テーブル1"
 $book.SaveAs($OutputFolder+$sessionId+".xlsx",51)
 $book.close()
 $excel.quit()
