@@ -68,6 +68,19 @@ foreach($row in $output){
 $csv|Export-Csv -Path ($OutputFolder+$sessionId+".csv") -NoTypeInformation -Encoding UTF8
 
 ```
+## (おまけ) Excel を通じて CSV ファイルをテーブル フォーマットありの Excel ファイルに変換
+```
+$excel = new-Object -com excel.application
+$excel.visible = $false
+$book = $excel.Workbooks.open($OutputFolder+$sessionId+".csv")
+$book.ActiveSheet.ListObjects.Add(1,$book.ActiveSheet.Range("A1").CurrentRegion ,$null,1)
+$book.SaveAs($OutputFolder+$sessionId+".xlsx",51)
+$book.close()
+$excel.quit()
+
+```
+なお 15,145 件のデータでは、CSV 形式で 8.31 MB のサイズだったファイルが、XLSX 形式に変換することで約 3 分の 1 の 2.68 MB に圧縮できた。
+
 ## (参考) DLPEndpooint の RecordType で確認されている Operation の種類
 (他にも BlueeTooth の操作もあるはず)
 - FileDeleted  
