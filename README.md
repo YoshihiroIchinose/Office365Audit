@@ -22,7 +22,7 @@ $RecordType="DLPEndpoint"
 $OutputFolder=[System.Environment]::GetFolderPath("Desktop")+"\"
 
 Import-Module ExchangeOnlineManagement
-Connect-IPPSSession -UserPrincipalName $User
+Connect-ExchangeOnline -UserPrincipalName $User
 
 #監査ログデータを取得
 $sessionId=$RecordType+(Get-Date -Format "yyyyMMdd-HHmm")
