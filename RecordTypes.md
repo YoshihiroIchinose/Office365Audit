@@ -1,7 +1,8 @@
-# Office 365 監査ログでの RecordType 一覧
-[Docs](https://docs.microsoft.com/en-us/office/office-365-management-api/office-365-management-activity-api-schema#auditlogrecordtype) に AuditRecorType の取りうる値が一覧で公開されていますが、公開されているものだけが全部ではなく、更新が反映されていないものあります。内部的に定義された RecordTypes の文字列については、Search-UnifiedAuditLog の -RecrodType の引数のエラーから取得することができます。各 RecordTypes の文字列に振られている列挙体としての値については、New-UnifiedAuditLogRetentionPolicy の -RecordTypes の引数に文字列として、RecordTypes を指定し、その後 Set-UnifiedAuditLogRetentionPolicy で得られた設定の中で、 RecordTypes の値がどのような数字になっているかで判断できます。2021 年 6 月時点で、いくつかの欠番はありますが 1 から 136 までの値があります。なお Advanced Audit の機能で、有効なライセンスがあれば、自動的に 90 日保持されるログの種類については、こちらの[Docs](https://docs.microsoft.com/ja-jp/microsoft-365/compliance/audit-log-retention-policies?view=o365-worldwide#more-information)
-に記載があります。
+# Office 365 監査ログでの RecordType について
+[Docs](https://docs.microsoft.com/en-us/office/office-365-management-api/office-365-management-activity-api-schema#auditlogrecordtype) に AuditRecorType の取りうる値が一覧で公開されていますが、公開されているものだけが全部ではなく、更新が反映されていないものあります。内部的に定義された RecordTypes の文字列については、Search-UnifiedAuditLog の -RecrodType の引数のエラーから取得することができます。各 RecordTypes の文字列に振られている列挙体としての値については、New-UnifiedAuditLogRetentionPolicy の -RecordTypes の引数に文字列として、RecordTypes を指定し、その後 Set-UnifiedAuditLogRetentionPolicy で得られた設定の中で、 RecordTypes の値がどのような数字になっているかで判断できます。2021 年 6 月時点で、いくつかの欠番はありますが 1 から 136 までの値があります。なお Advanced Audit の機能で、有効なライセンスがあれば、自動的に 90 日保持されるログの種類については、こちらの [Docs](https://docs.microsoft.com/ja-jp/microsoft-365/compliance/audit-log-retention-policies?view=o365-worldwide#more-information)
+ に記載があります。
 
+# Office 365 監査ログでの RecordType 一覧
 | 番号 | 名前 | Docs への記載 | Advanced Audit で既定で 1 年間の保持 | UI からの保持ポリシー設定対象 | Sentinel 対応(仮) |
 |:---|:---------|:----:|:----:|:----:|:----:|
 |1|ExchangeAdmin|Yes|Yes|Yes|Yes|Yes|
@@ -140,3 +141,23 @@
 |134|TABLEntryRemoved||||
 |135|ConsumptionResource||||
 |136|HealthcareSignal||||
+
+# 監査ログの保持ポリシーについて
+Advanced Audit が含まれているライセンスがあれば、最長 1 年間のログの保持ができ、さらに追加のアドオン ライセンスがあれば、最長 10 年間のログ保存が設定できます。ただし、[Docs](
+https://docs.microsoft.com/ja-jp/microsoft-365/compliance/audit-log-retention-policies?view=o365-worldwide#create-and-manage-audit-log-retention-policies-in-powershell) に記載がある通り、UI から保持ポリシーを設定できるログの種類は限定されているためその他のログも含めて、保持設定をする場合には、別途 PowerShell での設定が必要です。
+
+## PowerShell での保持ポリシー設定例
+以下の PowerShell では、欠番となる数字を除き、1 から 136 までの数字が入った配列を用意して、それらのログの種類について、ユーザー指定なしで、保持ポリシーを設定するものとなっています。
+```
+Connect-IPPSSession -UserPrincipalName xxxx@xxxx.onmicrosoft.com
+
+$range=@();
+$i=1;
+$skip=@(26,27,74,79,80,104,108);
+while ($i -le 136){if(!$skip.Contains($i)){$range+=$i;}$i++;}
+
+New-UnifiedAuditLogRetentionPolicy -name "1Year Policy for All" -RetentionDuration TwelveMonths -priority 200 -recordtypes $range
+```
+
+# 監査ログの保持ポリシーが有効となるタイミングについて
+ログが生成されたタイミングでのライセンス有無および保持ポリシーに従ってログが保持されるようです。なので現在残っているログに対して、今、保持ポリシーを適用しても期間を延長できない一方、ライセンスが切れた後も、当時ライセンスが有効だった期間のログについては、当時のポリシーに従ってログが保持されます。保持する期間が既定の 90 日、6 カ月、9 カ月、1 年、10 年の 5 種類のパターンしかないことから、ログ生成時に保持ポリシーに応じて、ログの入れ物を論理的に分けていて、入れ物ごとの有効期間で、古いログの切り捨てを行っているものと想像できます。
